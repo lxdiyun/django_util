@@ -91,13 +91,13 @@ def merge_selected(modeladmin, request, queryset):
 merge_selected.short_description = _("Merge selected %(verbose_name_plural)s")
 
 
-def prep_field(obj, field):
+def prep_field(obj, field_name):
     """ Returns the field as a unicode string. If the field is a callable, it
     attempts to call it first, without arguments.
     """
-    if '__' in field:
-        bits = field.split('__')
-        field = bits.pop()
+    if '__' in field_name:
+        bits = field_name.split('__')
+        field_name = bits.pop()
 
         for bit in bits:
             obj = getattr(obj, bit, None)
@@ -105,31 +105,61 @@ def prep_field(obj, field):
             if obj is None:
                 return ""
 
-    attr = getattr(obj, field)
+    choices_function = "get_" + field_name + "_display"
+    choices_exit = (choices_function in dir(obj))
+    if choices_exit:
+        attr = getattr(obj, choices_function)
+    else:
+        attr = getattr(obj, field_name)
+
     output = attr() if callable(attr) else attr
 #    return unicode(output).encode('utf-8') if output else ""
     return output
 
 
+def prep_label(model, field_names):
+    opts = model._meta
+    labels = []
+    for name in field_names:
+            field = opts.get_field(name)
+            labels.append(field.verbose_name)
+
+    return labels
+
+
+def prep_extra_label(model, field_names):
+    labels = []
+    for name in field_names:
+            field = getattr(model, name)
+            labels.append(field.short_description)
+
+    return labels
+
+
 def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
                       fields=None,
                       exclude=None,
+                      extra=None,
                       header=True):
     """ This function returns an export csv action. """
     def export_as_csv(modeladmin, request, queryset):
         """ Generic csv export admin action.
         Based on http://djangosnippets.org/snippets/2712/
         """
+        model = modeladmin.model
         opts = modeladmin.model._meta
         field_names = [field.name for field in opts.fields]
-        labels = []
 
         if exclude:
             field_names = [f for f in field_names if f not in exclude]
-
         elif fields:
             field_names = [field for field, _ in fields]
-            labels = [label for _, label in fields]
+
+        labels = prep_label(model, field_names)
+
+        if extra:
+                field_names += extra
+                labels += prep_extra_label(model, extra)
 
         response = HttpResponse(mimetype='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s.csv' % (
@@ -139,7 +169,7 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
         writer = UnicodeWriter(response)
 
         if header:
-            writer.writerow(labels if labels else field_names)
+            writer.writerow(labels)
 
         for obj in queryset:
             writer.writerow([prep_field(obj, field) for field in field_names])
