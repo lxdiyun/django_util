@@ -174,5 +174,27 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
         for obj in queryset:
             writer.writerow([prep_field(obj, field) for field in field_names])
         return response
+
     export_as_csv.short_description = description
     return export_as_csv
+
+
+def clone_action(description=_("Clone Selected %(verbose_name_plural)s"),
+                 exclude=[],
+                 user_fields=[]):
+    exclude.append("id")
+    if user_fields:
+        exclude += user_fields
+
+    def clone(modeladmin, request, queryset):
+        if (queryset and (1 <= queryset.all().count())):
+            for obj in queryset:
+                modeladmin.clone(obj, request)
+
+            messages.success(request, _("Clone Completed"))
+            return True
+        else:
+            return False
+
+    clone.short_description = description
+    return clone

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-31 16:23+0800\n"
+"POT-Creation-Date: 2013-03-31 21:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,11 +36,17 @@ msgid "Please select at least two objects"
 msgstr "请至少选择两项"
 
 #: admin_actions.py:91
-#, python-format
 msgid "Merge selected %(verbose_name_plural)s"
 msgstr "合并所选的 %(verbose_name_plural)s"
 
 #: admin_actions.py:139
-#, python-format
 msgid "Export Selected %(verbose_name_plural)s"
 msgstr "导出所选的 %(verbose_name_plural)s"
+
+#: admin_actions.py:182
+msgid "Clone Selected %(verbose_name_plural)s"
+msgstr "克隆所选的 %(verbose_name_plural)s"
+
+#: admin_actions.py:194
+msgid "Clone Completed"
+msgstr "克隆完成"
