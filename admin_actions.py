@@ -9,86 +9,91 @@ from django.contrib import messages
 from django.http import HttpResponse
 
 
-def merge_selected(modeladmin, request, queryset):
-    """
-    Action which merges the selected objects.
+def merge_selected_action(function=None,
+                          description=_(
+                              "Merge selected %(verbose_name_plural)s")):
 
-    This action first displays a confirmation page whichs shows all the
-    mergable objects, or, if the user has no permission one of the related
-    childs (foreignkeys), a "permission denied" message.
+    def merge_selected(modeladmin, request, queryset):
+        """
+        Action which merges the selected objects.
 
-    Next, it merge all selected objects and redirects back to the change list.
-    """
-    if (queryset and (1 < queryset.all().count())):
-        opts = modeladmin.model._meta
-        app_label = opts.app_label
+        This action first displays a confirmation page whichs shows all the
+        mergable objects, or, if the user has no permission one of the related
+        childs (foreignkeys), a "permission denied" message.
 
-        # Check that the user has permission for the actual model
-        if not modeladmin.has_delete_permission(request):
-            raise PermissionDenied
-        if not modeladmin.has_change_permission(request):
-            raise PermissionDenied
-        if not modeladmin.has_add_permission(request):
-            raise PermissionDenied
+        Next, it merge all selected objects and redirects back to the change
+        list.
+        """
+        if (queryset and (1 < queryset.all().count())):
+            opts = modeladmin.model._meta
+            app_label = opts.app_label
 
-        using = router.db_for_write(modeladmin.model)
-
-        # Populate meragable, a data structure of all related objects that
-        # will also be merged.
-        mergeable_objects, perms_needed, protected = get_merged_objects(
-            queryset, opts, request.user, modeladmin.admin_site, using)
-
-        # The user has already confirmed the mergeration.
-        # Do the mergeration and return a None to
-        # display the change list view again.
-        if request.POST.get('post'):
-            if perms_needed:
+            # Check that the user has permission for the actual model
+            if not modeladmin.has_delete_permission(request):
                 raise PermissionDenied
-            n = queryset.count()
-            if n:
-                merge_function = 'merge_selected_' + opts.object_name.lower()
-                merge_function = globals()[merge_function]
-                if (merge_function(modeladmin, request, queryset)):
-                    messages.success(request, _("Merge Completed"))
-            # Return None to display the change list page again.
-            return None
+            if not modeladmin.has_change_permission(request):
+                raise PermissionDenied
+            if not modeladmin.has_add_permission(request):
+                raise PermissionDenied
 
-        if len(queryset) == 1:
-            objects_name = force_unicode(opts.verbose_name)
+            using = router.db_for_write(modeladmin.model)
+
+            # Populate meragable, a data structure of all related objects that
+            # will also be merged.
+            mergeable_objects, perms_needed, protected = get_merged_objects(
+                queryset, opts, request.user, modeladmin.admin_site, using)
+
+            # The user has already confirmed the mergeration.
+            # Do the mergeration and return a None to
+            # display the change list view again.
+            if request.POST.get('post'):
+                if perms_needed:
+                    raise PermissionDenied
+                n = queryset.count()
+                if n:
+                    if (function(modeladmin, request, queryset)):
+                        messages.success(request, _("Merge Completed"))
+                # Return None to display the change list page again.
+                return None
+
+            if len(queryset) == 1:
+                objects_name = force_unicode(opts.verbose_name)
+            else:
+                objects_name = force_unicode(opts.verbose_name_plural)
+
+            if perms_needed or protected:
+                title = _("Cannot merge %(name)s") % {"name": objects_name}
+            else:
+                title = _("Are you sure?")
+
+            context = {
+                "title": title,
+                "objects_name": objects_name,
+                "mergeable_objects": [mergeable_objects],
+                'queryset': queryset,
+                "perms_lacking": perms_needed,
+                "protected": protected,
+                "opts": opts,
+                "app_label": app_label,
+                'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
+            }
+
+            # Display the confirmation page
+            templates = ["admin/%s/%s/merge_selected_confirmation.html"
+                         % (app_label, opts.object_name.lower()),
+                         "admin/%s/merge_selected_confirmation.html"
+                         % app_label,
+                         "admin/merge_selected_confirmation.html"
+                         ]
+            return TemplateResponse(request,
+                                    templates,
+                                    context,
+                                    current_app=modeladmin.admin_site.name)
         else:
-            objects_name = force_unicode(opts.verbose_name_plural)
+            messages.error(request, _("Please select at least two objects"))
 
-        if perms_needed or protected:
-            title = _("Cannot merge %(name)s") % {"name": objects_name}
-        else:
-            title = _("Are you sure?")
-
-        context = {
-            "title": title,
-            "objects_name": objects_name,
-            "mergeable_objects": [mergeable_objects],
-            'queryset': queryset,
-            "perms_lacking": perms_needed,
-            "protected": protected,
-            "opts": opts,
-            "app_label": app_label,
-            'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
-        }
-
-        # Display the confirmation page
-        templates = ["admin/%s/%s/merge_selected_confirmation.html"
-                     % (app_label, opts.object_name.lower()),
-                     "admin/%s/merge_selected_confirmation.html" % app_label,
-                     "admin/merge_selected_confirmation.html"
-                     ]
-        return TemplateResponse(request,
-                                templates,
-                                context,
-                                current_app=modeladmin.admin_site.name)
-    else:
-        messages.error(request, _("Please select at least two objects"))
-
-merge_selected.short_description = _("Merge selected %(verbose_name_plural)s")
+    merge_selected.short_description = description
+    return merge_selected
 
 
 def prep_field(obj, field_name):
@@ -113,7 +118,6 @@ def prep_field(obj, field_name):
         attr = getattr(obj, field_name)
 
     output = attr() if callable(attr) else attr
-#    return unicode(output).encode('utf-8') if output else ""
     return output
 
 
@@ -153,7 +157,7 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
         if exclude:
             field_names = [f for f in field_names if f not in exclude]
         elif fields:
-            field_names = [field for field, _ in fields]
+            field_names = fields
 
         labels = prep_label(model, field_names)
 
