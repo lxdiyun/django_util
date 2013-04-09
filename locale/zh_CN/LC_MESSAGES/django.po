@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-31 21:00+0800\n"
+"POT-Creation-Date: 2013-04-10 00:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,35 +18,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: admin_actions.py:52
+#: admin_actions.py:14
+#, python-format
+msgid "Merge selected %(verbose_name_plural)s"
+msgstr "合并所选的 %(verbose_name_plural)s"
+
+#: admin_actions.py:55
 msgid "Merge Completed"
 msgstr "合并完成"
 
-#: admin_actions.py:62
+#: admin_actions.py:65
 #, python-format
 msgid "Cannot merge %(name)s"
 msgstr "无法合并 %(name)s"
 
-#: admin_actions.py:64
+#: admin_actions.py:67
 msgid "Are you sure?"
 msgstr "你确定吗?"
 
-#: admin_actions.py:89
+#: admin_actions.py:92
 msgid "Please select at least two objects"
 msgstr "请至少选择两项"
 
-#: admin_actions.py:91
-msgid "Merge selected %(verbose_name_plural)s"
-msgstr "合并所选的 %(verbose_name_plural)s"
-
-#: admin_actions.py:139
+#: admin_actions.py:143
+#, python-format
 msgid "Export Selected %(verbose_name_plural)s"
 msgstr "导出所选的 %(verbose_name_plural)s"
 
-#: admin_actions.py:182
+#: admin_actions.py:186
+#, python-format
 msgid "Clone Selected %(verbose_name_plural)s"
 msgstr "克隆所选的 %(verbose_name_plural)s"
 
-#: admin_actions.py:194
+#: admin_actions.py:198
 msgid "Clone Completed"
 msgstr "克隆完成"
