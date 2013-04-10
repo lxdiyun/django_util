@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-10 00:49+0800\n"
+"POT-Creation-Date: 2013-04-10 09:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,7 +36,7 @@ msgstr "无法合并 %(name)s"
 msgid "Are you sure?"
 msgstr "你确定吗?"
 
-#: admin_actions.py:92
+#: admin_actions.py:93
 msgid "Please select at least two objects"
 msgstr "请至少选择两项"
 
@@ -50,6 +50,50 @@ msgstr "导出所选的 %(verbose_name_plural)s"
 msgid "Clone Selected %(verbose_name_plural)s"
 msgstr "克隆所选的 %(verbose_name_plural)s"
 
-#: admin_actions.py:198
+#: admin_actions.py:192
 msgid "Clone Completed"
 msgstr "克隆完成"
+
+#: admin_actions.py:195
+msgid "Clone Falied, please only select one object"
+msgstr "克隆失败，请只选择一个对象"
+
+#: templates/admin/merge_selected_confirmation.html:14
+msgid "Home"
+msgstr "首页"
+
+#: templates/admin/merge_selected_confirmation.html:17
+msgid "Merge multiple objects"
+msgstr "合并多个对象"
+
+#: templates/admin/merge_selected_confirmation.html:27
+#, python-format
+msgid ""
+"Merging the selected %(objects_name)s would result in merging related "
+"objects, but your account doesn't have permission to merge the following "
+"types of objects:"
+msgstr ""
+"合并 %(objects_name)s 需要合其并相关的条目,但是你没有相关权限合并以下条目:"
+
+#: templates/admin/merge_selected_confirmation.html:35
+#, python-format
+msgid ""
+"Merging the selected %(objects_name)s would require Merging the following "
+"protected related objects:"
+msgstr "合并 %(objects_name)s 需要合并以下相关的守保护条目:"
+
+#: templates/admin/merge_selected_confirmation.html:45
+#, python-format
+msgid ""
+"Are you sure you want to merge the selected %(objects_name)s? All of the "
+"following objects and their related items will be merged:"
+msgstr ""
+"你确认你要合并所选择的 %(objects_name)s ? 所有以下条目及其相关条目将被合并:"
+
+#: templates/admin/merge_selected_confirmation.html:58
+msgid "Cancel"
+msgstr "取消"
+
+#: templates/admin/merge_selected_confirmation.html:59
+msgid "Yes, I'm sure"
+msgstr ""

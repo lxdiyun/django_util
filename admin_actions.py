@@ -185,13 +185,15 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
 
 def clone_action(description=_("Clone Selected %(verbose_name_plural)s")):
     def clone(modeladmin, request, queryset):
-        if (queryset and (1 <= queryset.all().count())):
+        if (queryset and (1 == queryset.all().count())):
             for obj in queryset:
                 modeladmin.clone(obj, request)
 
             messages.success(request, _("Clone Completed"))
             return True
         else:
+            messages.error(request, _("Clone Falied, please only select one "
+                                      "object"))
             return False
 
     clone.short_description = description
