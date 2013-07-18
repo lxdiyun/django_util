@@ -4,3 +4,4 @@
 *.mo
 local_settings.py
 mysite/media/cache
+*.swp

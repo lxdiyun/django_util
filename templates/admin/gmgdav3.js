@@ -1,9 +1,7 @@
 {% extends "gis/admin/openlayers.js" %}
-{% block base_layer %}new OpenLayers.Layer.Google("Google Road", {type: google.maps.MapTypeId.ROADMAP});{% endblock %}
+{% block base_layer %}new OpenLayers.Layer.Google("Google Base Layer", {'type': google.maps.MapTypeId.ROADMAP, 'sphericalMercator' : true});{% endblock %}
 
 {% block controls %}
-{{ block.super }}
-
 django.jQuery(document).ready(function() {
 
 	var mappa = {{ module }}.map;
@@ -19,18 +17,6 @@ django.jQuery('#id_longitude, #id_latitude').change(function() {
 	lat = django.jQuery("#id_latitude").val();
 	modcoo(lng, lat, mappa);
 	revgeocod(lng, lat, mappa); 
-});
-
-django.jQuery('[id*="OpenLayers.Layer.Vector_41_"]').click(function() { 
-	srco = document.getElementById('{{ id }}').value;
-	var a = srco.split(" ");
-	var b = a[0].split("(");
-	var c = a[1].split(")");
-	lngm = parseFloat(c[0]);
-	latm = parseFloat(b[1]);
-	var c = new OpenLayers.Geometry.Point(latm,lngm).transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
-	input_lng_lat(c.x,c.y, mappa);
-	revgeocod(c.x, c.y, mappa);
 });
 
 });
@@ -79,4 +65,46 @@ function revgeocod(lng, lat, mappa) {
 		}
 	});
 };
+
+{{ module }}.drawPointHandler = function () { 
+	srco = document.getElementById('{{ id }}').value;
+	var mappa = {{ module }}.map;
+	var a = srco.split(" ");
+	var b = a[0].split("(");
+	var c = a[1].split(")");
+	lngm = parseFloat(c[0]);
+	latm = parseFloat(b[1]);
+	var c = new OpenLayers.Geometry.Point(latm,lngm).transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+	input_lng_lat(c.x,c.y, mappa);
+	revgeocod(c.x, c.y, mappa);
+};
+
+
+// Create an array of controls based on geometry type
+{{ module }}.getControls = function(lyr){
+  {{ module }}.panel = new OpenLayers.Control.Panel({'displayClass': 'olControlEditingToolbar'});
+  var nav = new OpenLayers.Control.Navigation();
+  var draw_ctl;
+  if ({{ module }}.is_point){
+    draw_ctl = new OpenLayers.Control.DrawFeature(lyr, OpenLayers.Handler.Point, {
+	    'displayClass': 'olControlDrawFeaturePoint',
+    });
+    draw_ctl.events.register('featureadded', draw_ctl, function(f) {
+	    {{ module }}.drawPointHandler()
+    });
+  }
+  if ({{ module }}.modifiable){
+    var mod = new OpenLayers.Control.ModifyFeature(lyr, {'displayClass': 'olControlModifyFeature'});
+    {{ module }}.controls = [nav, draw_ctl, mod];
+  } else {
+    if(!lyr.features.length){
+      {{ module }}.controls = [nav, draw_ctl];
+    } else {
+      {{ module }}.controls = [nav];
+    }
+  }
+}
+
+{{ block.super }}
+
 {% endblock %}
