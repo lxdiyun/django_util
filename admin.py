@@ -1,8 +1,19 @@
-from models import Point
+from models import Point, Photo
 from django.contrib.gis import admin
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.maps.google.gmap import GoogleMapException
 from django.conf import settings
+from django.contrib.contenttypes import generic
+from django.utils.translation import ugettext_lazy as _
+from imagekit.admin import AdminThumbnail
+
+
+class PhotoInline(generic.GenericTabularInline):
+    model = Photo
+    readonly_fields = ['admin_thumbnail']
+    admin_thumbnail = AdminThumbnail(image_field='thumbnail')
+
+    admin_thumbnail.short_description = _('Thumbnail')
 
 
 class GoogleAdmin(admin.OSMGeoAdmin):
@@ -26,7 +37,19 @@ class GoogleAdmin(admin.OSMGeoAdmin):
     default_zoom = 13
     extra_js = [url + "?key=" + key + "&sensor=false&language=zh-CN"]
     openlayers_url = "http://openlayers.org/api/2.13.1/OpenLayers.js"
-    print extra_js
     map_template = 'admin/gmgdav3.html'
 
+    inlines = [PhotoInline]
+
+
+class PhotoAdmin(admin.ModelAdmin):
+    list_display = ["name", "admin_thumbnail"]
+    fields = ["name", "image", "admin_thumbnail"]
+    readonly_fields = ['admin_thumbnail']
+    admin_thumbnail = AdminThumbnail(image_field='thumbnail')
+    search_fields = ['name']
+
+    admin_thumbnail.short_description = _('Thumbnail')
+
 admin.site.register(Point, GoogleAdmin)
+#admin.site.register(Photo, PhotoAdmin)
