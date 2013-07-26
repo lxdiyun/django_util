@@ -7,7 +7,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 
 
-class Point(models.Model):
+class PointBase(models.Model):
     address = models.CharField(max_length=100,
                                help_text='Press "Tab" to refresh the map')
     longitude = models.FloatField(help_text='WGS84 Decimal Degree. '
@@ -15,9 +15,6 @@ class Point(models.Model):
     latitude = models.FloatField(help_text='WGS84 Decimal Degree. '
                                  'Press "Tab" to refresh the map')
     in_geom = models.PointField('shp', srid=4326)
-    photos = generic.GenericRelation('Photo',
-                                     content_type_field='content_type',
-                                     object_id_field='object_id')
 
     objects = models.GeoManager()
 
@@ -25,7 +22,7 @@ class Point(models.Model):
         return smart_unicode(self.address)
 
 
-class Photo(models.Model):
+class PhotoBase(models.Model):
     name = models.CharField(max_length=250, verbose_name=_('photo name'))
     image = models.ImageField(upload_to='utils_photo',
                               verbose_name=_('Image'))
