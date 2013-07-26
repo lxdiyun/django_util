@@ -1,3 +1,4 @@
+{% load dajaxice_templatetags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +10,9 @@
 
 <!-- Le styles -->
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}bootstrap/css/bootstrap.min.css">
+
+{% dajaxice_js_import %}
+
 {% block extra_head %} {% endblock %}
 </head>
 
@@ -22,6 +26,7 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script type="text/javascript" src="{{STATIC_URL}}jquery/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}dajax/jquery.dajax.core.js"></script>
 {% block extra_tail %}{% endblock %}
 </body>
 </html>
