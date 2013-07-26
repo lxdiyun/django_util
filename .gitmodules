@@ -1,6 +1,6 @@
 [submodule "static/bootstrap-image"]
 	path = static/bootstrap-image
 	url = https://github.com/blueimp/Bootstrap-Image-Gallery.git
-[submodule "static/blueimp_Gallery"]
-	path = static/blueimp_Gallery
+[submodule "static/blueimp-Gallery"]
+	path = static/blueimp-Gallery
 	url = https://github.com/blueimp/Gallery.git
