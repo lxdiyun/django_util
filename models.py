@@ -21,6 +21,9 @@ class PointBase(models.Model):
     def __unicode__(self):
         return smart_unicode(self.address)
 
+    class Meta:
+        abstract = True
+
 
 class PhotoBase(models.Model):
     name = models.CharField(max_length=250, verbose_name=_('photo name'))
@@ -40,3 +43,4 @@ class PhotoBase(models.Model):
     class Meta:
         verbose_name = _('photo')
         verbose_name_plural = _('photos')
+        abstract = True

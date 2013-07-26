@@ -3,10 +3,10 @@ from django.conf import settings
 from django.contrib.gis.maps.google.gmap import GoogleMapException
 
 
-class GmapBaseView(TemplateView):
+class GmapViewBase(TemplateView):
 
     def get_context_data(self, **kwargs):
-        context = super(GmapBaseView, self).get_context_data(**kwargs)
+        context = super(GmapViewBase, self).get_context_data(**kwargs)
         try:
             key = settings.GOOGLE_MAPS_API_KEY
         except AttributeError:
