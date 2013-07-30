@@ -1,6 +1,5 @@
 from django.contrib.gis import admin
 from django.contrib.gis.geos import GEOSGeometry
-from django.contrib.gis.maps.google.gmap import GoogleMapException
 from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
@@ -23,10 +22,9 @@ class PointAdminBase(admin.OSMGeoAdmin):
         key = ""
         key_url = "?"
 
-    try:
-        url = settings.GOOGLE_MAPS_API_URL
-    except AttributeError:
-        url = "https://maps.googleapis.com/maps/api/js"
+    url = getattr(settings,
+                  'GOOGLE_MAPS_API_URL',
+                  "https://maps.googleapis.com/maps/api/js")
 
     g = GEOSGeometry('POINT (116.71 23.37)')  # Set map center
     g.set_srid(4326)
