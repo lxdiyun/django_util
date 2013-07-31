@@ -1,9 +1,34 @@
-from haystack.templatetags.highlight import HighlightNode
 from utils.highlighting import SummaryHighlighter
 from django import template
 
 
-class SummaryHighlightNode(HighlightNode):
+class SummaryHighlightNode(template.Node):
+    def __init__(self,
+                 text_block,
+                 query,
+                 html_tag=None,
+                 css_class=None,
+                 min_length=None,
+                 max_length=None):
+        self.text_block = template.Variable(text_block)
+        self.query = template.Variable(query)
+        self.html_tag = html_tag
+        self.css_class = css_class
+        self.max_length = max_length
+        self.min_length = min_length
+
+        if html_tag is not None:
+            self.html_tag = template.Variable(html_tag)
+
+        if css_class is not None:
+            self.css_class = template.Variable(css_class)
+
+        if max_length is not None:
+            self.max_length = template.Variable(max_length)
+
+        if min_length is not None:
+            self.max_length = template.Variable(min_length)
+
     def render(self, context):
         text_block = self.text_block.resolve(context)
         query = self.query.resolve(context)
@@ -17,6 +42,9 @@ class SummaryHighlightNode(HighlightNode):
 
         if self.max_length is not None:
             kwargs['max_length'] = self.max_length.resolve(context)
+
+        if self.min_length is not None:
+            kwargs['min_length'] = self.max_length.resolve(context)
 
         highlighter = SummaryHighlighter(query, **kwargs)
         highlighted_text = highlighter.highlight(text_block)
@@ -77,11 +105,14 @@ def summary_highlight(parser, token):
     for bit in arg_bits:
         if bit == 'css_class':
             kwargs['css_class'] = arg_bits.next()
-        
+
         if bit == 'html_tag':
             kwargs['html_tag'] = arg_bits.next()
-        
+
         if bit == 'max_length':
             kwargs['max_length'] = arg_bits.next()
-    
+
+        if bit == 'min_length':
+            kwargs['min_length'] = arg_bits.next()
+
     return SummaryHighlightNode(text_block, query, **kwargs)
