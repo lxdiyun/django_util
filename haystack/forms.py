@@ -1,5 +1,5 @@
 from haystack.forms import ModelSearchForm
-from haystack.inputs import Clean
+from haystack.inputs import AutoQuery
 from haystack.query import SQ
 from segment import jieba_segment
 
@@ -24,7 +24,7 @@ class MultiSearchForm(ModelSearchForm):
         sq = SQ()
 
         for term in terms:
-            sq.add(SQ(content=Clean(term)), SQ.AND)
+            sq.add(SQ(content=AutoQuery(term)), SQ.AND)
 
         sqs = self.searchqueryset.filter(sq)
 
