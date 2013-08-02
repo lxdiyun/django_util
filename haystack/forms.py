@@ -1,14 +1,14 @@
 from haystack.forms import ModelSearchForm
 from haystack.inputs import Clean
 from haystack.query import SQ
-from segment import mmseg_segment
+from segment import jieba_segment
 
 
 class MultiSearchForm(ModelSearchForm):
     def clean(self):
         cleaned_data = super(MultiSearchForm, self).clean()
         q = cleaned_data.get('q')
-        q = mmseg_segment(q)
+        q = jieba_segment(q)
         cleaned_data['q'] = q
 
         return cleaned_data

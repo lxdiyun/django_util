@@ -1,4 +1,4 @@
-from utils.highlighting import SummaryHighlighter
+from utils.haystack.highlighting import SummaryHighlighter
 from django import template
 
 

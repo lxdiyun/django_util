@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 from haystack.utils.highlighting import Highlighter
 from re import search
+from segment import jieba_segment
 
 
 class HighlighterBase(Highlighter):
     html_tag = "b"
     css_class = ""
+
+    def __init__(self, query, **kwargs):
+        super(HighlighterBase, self).__init__(query, **kwargs)
+
+        self.query_words = set(jieba_segment(query).split())
 
 
 class SummaryHighlighter(HighlighterBase):
