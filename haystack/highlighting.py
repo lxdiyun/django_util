@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from haystack.utils.highlighting import Highlighter
 from re import search
-from segment import jieba_segment
+from segments import jieba_segment
 
 
 class HighlighterBase(Highlighter):
