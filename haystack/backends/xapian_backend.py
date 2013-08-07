@@ -570,7 +570,6 @@ class XapianSearchBackend(BaseSearchBackend):
 
         Returns a xapian.Query
         """
-        print(query_string)
         if query_string == '*':
             return xapian.Query('')  # Match everything
         elif query_string == '':
@@ -590,7 +589,6 @@ class XapianSearchBackend(BaseSearchBackend):
 
         vrp = XHValueRangeProcessor(self)
         qp.add_valuerangeprocessor(vrp)
-        print(query_string)
 
         return qp.parse_query(query_string, self.flags)
 
@@ -955,18 +953,19 @@ class XapianSearchQuery(BaseSearchQuery):
         return kwargs
 
     def build_query(self):
-
+        query = xapian.Query.MatchAll
         query_string = self.query_filter.as_query_string(
             self.build_query_fragment)
-        parser = xapian.QueryParser()
-        query = parser.parse_query(query_string)
+        if query_string:
+            parser = xapian.QueryParser()
+            query = parser.parse_query(query_string)
 
         if self.models:
             subqueries = [
                 xapian.Query(
                     xapian.Query.OP_SCALE_WEIGHT, xapian.Query('%s%s.%s' % (
-                            DOCUMENT_CT_TERM_PREFIX,
-                            model._meta.app_label, model._meta.module_name
+                        DOCUMENT_CT_TERM_PREFIX,
+                        model._meta.app_label, model._meta.module_name
                         )
                     ), 0  # Pure boolean sub-query
                 ) for model in self.models
@@ -1000,10 +999,8 @@ class XapianSearchQuery(BaseSearchQuery):
             else:
                 expression, term = child
                 field, filter_type = search_node.split_expression(expression)
-                print(field, filter_type)
 
                 prepared_value = term.prepare(self)
-                print(prepared_value)
 
                 # Handle when we've got a ``ValuesListQuerySet``...
                 if hasattr(term, 'values_list'):
