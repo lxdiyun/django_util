@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from haystack.utils.highlighting import Highlighter
 from re import search
-from segments import jieba_segment
+from segments import segment
 
 
 class HighlighterBase(Highlighter):
@@ -11,7 +11,7 @@ class HighlighterBase(Highlighter):
     def __init__(self, query, **kwargs):
         super(HighlighterBase, self).__init__(query, **kwargs)
 
-        self.query_words = set(jieba_segment(query).split())
+        self.query_words = set(segment(query).split())
 
 
 class SummaryHighlighter(HighlighterBase):
