@@ -1,4 +1,4 @@
-from zenshu.utils import UnicodeWriter, get_merged_objects
+from utils import UnicodeWriter, get_merged_objects
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.db import router
