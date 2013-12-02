@@ -9,7 +9,9 @@ django.jQuery(document).ready(function() {
 	var $address = django.jQuery('#id_address');
 
 $address.change(function() {
-	geocod($address.val(), mappa);
+	if (!django.jQuery("#id_longitude").val()) {
+		geocod($address.val(), mappa);
+	}
 });
 
 django.jQuery('#id_longitude, #id_latitude').change(function() {
