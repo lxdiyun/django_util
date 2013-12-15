@@ -1,4 +1,5 @@
 $(document).ready(function(){
 	$("a[rel^='prettyPhoto']").prettyPhoto({
-		social_tools:null});
+		social_tools: null,
+		deeplinking: false });
 });
