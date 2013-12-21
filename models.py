@@ -26,11 +26,13 @@ class PointBase(models.Model):
 
 
 class PhotoBase(models.Model):
+    thumbnail_width, thumbnail_height = 75, 100
     name = models.CharField(max_length=250, verbose_name=_('photo name'))
     image = models.ImageField(upload_to='utils_photo',
                               verbose_name=_('Image'))
     thumbnail = ImageSpecField(source='image',
-                               processors=[SmartResize(75, 100)],
+                               processors=[SmartResize(thumbnail_width,
+                                                       thumbnail_height)],
                                format='JPEG',
                                options={'quality': 60})
     content_type = models.ForeignKey(ContentType)
