@@ -1,3 +1,6 @@
+from uuid import uuid4
+import os
+
 from django.contrib.gis.db import models
 from django.utils.encoding import smart_unicode
 from imagekit.models import ImageSpecField
@@ -25,9 +28,19 @@ class PointBase(models.Model):
         abstract = True
 
 
+def random_path_and_rename(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(path, filename)
+    return wrapper
+
+
 class PhotoBase(models.Model):
     name = models.CharField(max_length=250, verbose_name=_('photo name'))
-    image = models.ImageField(upload_to='utils_photo',
+    image = models.ImageField(upload_to=random_path_and_rename('utils_photo'),
                               verbose_name=_('Image'))
     thumbnail = ImageSpecField(source='image',
                                processors=[SmartResize(75, 100)],
