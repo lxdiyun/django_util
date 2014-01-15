@@ -5,3 +5,8 @@ b {
 	background-color: #EEEE99;
 	font-weight: bold;
 }
+
+highlight {
+	font-style: normal;
+	color: #FF0000;
+}
