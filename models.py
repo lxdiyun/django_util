@@ -1,6 +1,3 @@
-from uuid import uuid4
-import os
-
 from django.contrib.gis.db import models
 from django.utils.encoding import smart_unicode
 from imagekit.models import ImageSpecField
@@ -8,6 +5,8 @@ from imagekit.processors import SmartResize
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+
+from utils import random_path_and_rename
 
 
 class PointBase(models.Model):
@@ -26,16 +25,6 @@ class PointBase(models.Model):
 
     class Meta:
         abstract = True
-
-
-def random_path_and_rename(path):
-    def wrapper(instance, filename):
-        ext = filename.split('.')[-1]
-        # set filename as random string
-        filename = '{}.{}'.format(uuid4().hex, ext)
-        # return the whole path to the file
-        return os.path.join(path, filename)
-    return wrapper
 
 
 class PhotoBase(models.Model):

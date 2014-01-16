@@ -1,3 +1,6 @@
+from uuid import uuid4
+import os
+
 import csv
 import StringIO
 from django.contrib.admin.util import NestedObjects, quote
@@ -6,6 +9,16 @@ from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.utils.text import capfirst
 from django.utils.encoding import force_unicode
+
+
+def random_path_and_rename(path):
+    def wrapper(instance, filename):
+        ext = filename.split('.')[-1]
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(path, filename)
+    return wrapper
 
 
 class UnicodeWriter(object):
