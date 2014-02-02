@@ -1,6 +1,6 @@
 *.log
 *.pot
-*.pyc
+*.py[cod]
 *.mo
 local_settings.py
 mysite/media/cache
