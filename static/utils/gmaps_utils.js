@@ -1,4 +1,5 @@
 var map;
+var g_bounds_min_zoom = null;
 function load_map() {
 	var mapOption = { 
 		div: '#map', 
@@ -23,25 +24,46 @@ function load_map() {
 		},
 	};
 	map = new GMaps(mapOption);
+
+	if (null != g_bounds_min_zoom) {
+		google.maps.event.addListener(map.map, 'zoom_changed', function() {
+			zoomChangeBoundsListener = 
+			google.maps.event.addListener(map.map, 'bounds_changed', function(event) {
+				if (this.getZoom() > g_bounds_min_zoom) {
+					// Change max/min zoom here
+					this.setZoom(g_bounds_min_zoom);
+				}
+				google.maps.event.removeListener(zoomChangeBoundsListener);
+			});
+		});
+	}
 }
 
 var markers = [];
-function add_locations(data) {
-	var infowindow = new google.maps.InfoWindow();
-	var locations = $.parseJSON(data)
-		for (var i = 0; i < locations.length; ++i) {
-			var loc = locations[i].fields;
-			marker = GMaps.prototype.createMarker({
-				lat: loc.latitude,
-			       lng: loc.longitude,
-			       title: loc.name,
-			       animation: google.maps.Animation.DROP
-			});
-			marker.id = locations[i].pk;
-			markers.push(marker);
-			map.addMarker(marker);
-			add_listener(marker, infowindow);
-		};
+function add_marker(id, lat, lng, title, call_back=null, infowindow_group=null) {
+	var infowindow = null;
+	if (null == infowindow_group) {
+		infowindow = new google.maps.InfoWindow();
+	} else {
+		infowindow = infowindow_group;
+	}
+	var marker = GMaps.prototype.createMarker({ 
+		lat: lat,
+	    lng: lng,
+	    title: title,
+	    animation: google.maps.Animation.DROP
+	});
+	marker.id = id;
+	markers.push(marker);
+	map.addMarker(marker);
+
+	google.maps.event.addListener(marker, 'click', function() {
+		infowindow.setContent(marker.title);
+		infowindow.open(marker.get('map'), marker);
+		if (null != call_back) {
+			call_back(marker);
+		}
+	});
 }
 
 function set_all_map(map) {
@@ -55,3 +77,13 @@ function clean_all_markers() {
 	markers.length = 0;
 }
 
+function zoom_to_show_all_markers(data) {
+	//  Create a new viewpoint bound
+	var bounds = new google.maps.LatLngBounds ();
+	//  Go through each...
+	for (i = 0, markers_length = markers.length; i < markers_length; ++i) {
+		bounds.extend(markers[i].getPosition());
+	}
+	//  Fit these bounds to the map
+	map.fitBounds (bounds);
+}
