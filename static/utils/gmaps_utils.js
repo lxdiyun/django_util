@@ -40,9 +40,9 @@ function load_map() {
 }
 
 var markers = [];
-function add_marker(id, lat, lng, title, call_back=null, infowindow_group=null) {
+function add_marker(id, lat, lng, title, call_back, infowindow_group) {
 	var infowindow = null;
-	if (null == infowindow_group) {
+	if (typeof(infowindow_group)==='undefined') {
 		infowindow = new google.maps.InfoWindow();
 	} else {
 		infowindow = infowindow_group;
@@ -60,7 +60,7 @@ function add_marker(id, lat, lng, title, call_back=null, infowindow_group=null) 
 	google.maps.event.addListener(marker, 'click', function() {
 		infowindow.setContent(marker.title);
 		infowindow.open(marker.get('map'), marker);
-		if (null != call_back) {
+		if ((typeof(call_back)!=='undefined') && (null !== call_back)) {
 			call_back(marker);
 		}
 	});
