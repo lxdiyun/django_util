@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-10 09:19+0800\n"
+"POT-Creation-Date: 2014-02-21 10:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: admin.py:14 admin.py:47
+msgid "Thumbnail"
+msgstr "缩略图"
 
 #: admin_actions.py:14
 #, python-format
@@ -58,6 +62,22 @@ msgstr "克隆完成"
 msgid "Clone Falied, please only select one object"
 msgstr "克隆失败，请只选择一个对象"
 
+#: models.py:32
+msgid "photo name"
+msgstr "相片名称"
+
+#: models.py:34
+msgid "Image"
+msgstr "图像"
+
+#: models.py:48
+msgid "photo"
+msgstr "相片"
+
+#: models.py:49
+msgid "photos"
+msgstr "相片"
+
 #: templates/admin/merge_selected_confirmation.html:14
 msgid "Home"
 msgstr "首页"
@@ -96,4 +116,4 @@ msgstr "取消"
 
 #: templates/admin/merge_selected_confirmation.html:59
 msgid "Yes, I'm sure"
-msgstr ""
+msgstr "是，我确认"
