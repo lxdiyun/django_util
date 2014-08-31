@@ -49,9 +49,10 @@ function add_marker(id, lat, lng, title, call_back, infowindow_group) {
 	}
 	var marker = GMaps.prototype.createMarker({ 
 		lat: lat,
-	    lng: lng,
-	    title: title,
-	    animation: google.maps.Animation.DROP
+		lng: lng,
+		title: title,
+		animation: google.maps.Animation.DROP,
+		icon: "http://mt.google.cn/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=1"
 	});
 	marker.id = id;
 	markers.push(marker);
