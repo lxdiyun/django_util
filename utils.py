@@ -3,7 +3,7 @@ import os
 
 import csv
 import StringIO
-from django.contrib.admin.util import NestedObjects, quote
+from django.contrib.admin.utils import NestedObjects, quote
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
