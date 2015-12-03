@@ -11,13 +11,15 @@ from django.utils.text import capfirst
 from django.utils.encoding import force_unicode
 
 
+def wrapper(instance, filename):
+    ext = filename.split('.')[-1]
+    # set filename as random string
+    filename = '{}.{}'.format(uuid4().hex, ext)
+    # return the whole path to the file
+    return os.path.join(path, filename)
+
+
 def random_path_and_rename(path):
-    def wrapper(instance, filename):
-        ext = filename.split('.')[-1]
-        # set filename as random string
-        filename = '{}.{}'.format(uuid4().hex, ext)
-        # return the whole path to the file
-        return os.path.join(path, filename)
     return wrapper
 
 

@@ -4,7 +4,7 @@ from utils import UnicodeWriter
 
 
 def export_as_csv(filename, field_names, queryset, header=None):
-        response = HttpResponse(mimetype='text/csv')
+        response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s.csv' % (
             unicode(filename).replace('.', '_')
         )

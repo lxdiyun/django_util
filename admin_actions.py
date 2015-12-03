@@ -165,7 +165,7 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
                 field_names += extra
                 labels += prep_extra_label(model, extra)
 
-        response = HttpResponse(mimetype='text/csv')
+        response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=%s.csv' % (
             unicode(opts).replace('.', '_')
         )
