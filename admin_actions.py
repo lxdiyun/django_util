@@ -145,6 +145,8 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
                       exclude=None,
                       extra=None,
                       header=True):
+    print "fields:" + str(fields)
+    print "extra:" + str(extra)
     """ This function returns an export csv action. """
     def export_as_csv(modeladmin, request, queryset):
         """ Generic csv export admin action.
@@ -157,7 +159,8 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
         if exclude:
             field_names = [f for f in field_names if f not in exclude]
         elif fields:
-            field_names = fields
+            # copy the list, not just assign the list
+            field_names = list(fields)
 
         labels = prep_label(model, field_names)
 
@@ -177,6 +180,7 @@ def export_csv_action(description=_("Export Selected %(verbose_name_plural)s"),
 
         for obj in queryset:
             writer.writerow([prep_field(obj, field) for field in field_names])
+
         return response
 
     export_as_csv.short_description = description
